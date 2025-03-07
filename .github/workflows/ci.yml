@@ -1,9 +1,14 @@
 name: CI/CD Pipeline
-on: [push]
+on:
+  push:
+    branches: [ "main" ]  # Hanya trigger saat push ke branch main
 
 jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
+    permissions:  # Tambahkan izin write untuk deployment
+      contents: write
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,8 +25,8 @@ jobs:
         run: npm test
 
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'  # Hanya deploy dari branch main
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .  # Folder yang akan di-deploy (root)
+          publish_dir: ./  # Pastikan path benar (root folder)
+          publish_branch: gh-pages  # Spesifikasikan branch tujuan
