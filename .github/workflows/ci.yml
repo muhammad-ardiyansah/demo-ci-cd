@@ -1,8 +1,8 @@
-name: CI Pipeline
-on: [push]  # Trigger saat ada push ke repo
+name: CI/CD Pipeline
+on: [push]
 
 jobs:
-  test:
+  test-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,3 +18,10 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'  # Hanya deploy dari branch main
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .  # Folder yang akan di-deploy (root)
